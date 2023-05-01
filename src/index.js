@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import { LoginSignupView, OnboardingView, SignupView } from './views';
+import {LoginSignupView, OnboardingView, SignupView} from './views';
 
 const Stack = createNativeStackNavigator();
 
@@ -24,17 +24,33 @@ const MyStack = () => {
         <Stack.Screen
           name="Onboarding"
           component={OnboardingView}
-          options={{title: 'Welcome'}}
+          options={{headerShown: false}}
         />
         <Stack.Screen
           name="LoginSignup"
           component={LoginSignupView}
-          options={{title: 'Welcome'}}
+          options={{
+            title: '',
+            headerStyle: {
+              backgroundColor: '#F0F3F8',
+              elevation: 0,
+              shadowOpacity: 0,
+            },
+            headerShadowVisible: false,
+          }}
         />
         <Stack.Screen
           name="Signup"
           component={SignupView}
-          options={{title: 'Welcome'}}
+          options={{
+            title: '',
+            headerStyle: {
+              backgroundColor: '#F0F3F8',
+              elevation: 0,
+              shadowOpacity: 0,
+            },
+            headerShadowVisible: false,
+          }}
         />
       </Stack.Navigator>
     </NavigationContainer>
