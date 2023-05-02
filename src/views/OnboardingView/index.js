@@ -71,7 +71,7 @@ export const OnboardingView = ({navigation}) => {
       <View className="flex-col space-y-4 px-6">
         <TouchableOpacity
           className="bg-[#933FE7] flex flex-row space-x-2 items-center justify-center py-3 rounded-3xl"
-          onPress={() => navigation.navigate('Signup')}>
+          onPress={() => navigation.navigate('LoginSignup')}>
           <View>
             <Text className="font-medium text-white">
               Sign Up

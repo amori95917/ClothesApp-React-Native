@@ -10,8 +10,10 @@ import {
 import CheckBox from 'expo-checkbox';
 import {launchImageLibrary} from 'react-native-image-picker';
 
+import Axios from '../../config/api';
+
 export const SignupView = () => {
-  const [filePath, setFilePath] = useState({});
+  const [filePath, setFilePath] = useState();
   const [username, setUsername] = useState('');
   const [isSelectedSubscription, setSelectedSubscription] = useState(false);
   const [isSelectedPolicy, setSelectedPolicy] = useState(false);
@@ -24,10 +26,7 @@ export const SignupView = () => {
       quality: 1,
     };
     launchImageLibrary(options, response => {
-      console.log('Response = ', response);
-
       if (response.didCancel) {
-        alert('User cancelled camera picker');
         return;
       } else if (response.errorCode == 'camera_unavailable') {
         alert('Camera not available on device');
@@ -39,15 +38,26 @@ export const SignupView = () => {
         alert(response.errorMessage);
         return;
       }
-      console.log('base64 -> ', response.base64);
-      console.log('uri -> ', response.uri);
-      console.log('width -> ', response.width);
-      console.log('height -> ', response.height);
-      console.log('fileSize -> ', response.fileSize);
-      console.log('type -> ', response.type);
-      console.log('fileName -> ', response.fileName);
-      setFilePath(response);
+      setFilePath(response.assets[0].uri);
     });
+  };
+
+  const handleSignUp = () => {
+    const formData = new FormData();
+    formData.append('username', username);
+    formData.append('photo', {
+      uri: filePath,
+      type: 'image/jpeg',
+      name: 'photo.jpg',
+    });
+    Axios.post('register', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Accept: 'application/json',
+      },
+    })
+      .then(res => console.log(res))
+      .catch(err => console.log(err));
   };
 
   return (
@@ -59,8 +69,11 @@ export const SignupView = () => {
         <TouchableOpacity
           className="w-32 h-32 rounded-full bg-white border border-black/30 -mb-2"
           onPress={() => chooseFile('photo')}>
-          {filePath.uri ? (
-            <Image source={{uri: filePath.uri}} className="w-full h-full" />
+          {filePath ? (
+            <Image
+              source={{uri: filePath}}
+              className="w-full h-full rounded-full"
+            />
           ) : (
             <Image
               className="w-7 h-6 m-auto"
@@ -103,11 +116,12 @@ export const SignupView = () => {
             and I’m at least 18 years old.
           </Text>
         </View>
-        <TouchableOpacity className="bg-[#933FE7] flex flex-row space-x-2 items-center justify-center py-3 rounded-3xl w-full">
+        <TouchableOpacity
+          onPress={handleSignUp}
+          disabled={!isSelectedPolicy}
+          className="bg-[#933FE7] flex flex-row space-x-2 items-center justify-center py-3 rounded-3xl w-full">
           <View>
-            <Text className="font-medium text-white">
-              Sign Up
-            </Text>
+            <Text className="font-medium text-white">Sign Up</Text>
           </View>
         </TouchableOpacity>
       </View>
